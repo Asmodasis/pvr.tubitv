@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="pvr.tubitv"
+  version="22.3.1"
+  name="Tubi TV PVR Client"
+  provider-name="Team Kodi, Shawn Ray">
+  <requires>@ADDON_DEPENDS@
+    <import addon="inputstream.adaptive" minversion="22.0.0"/>
+  </requires>
+  <extension
+    point="kodi.pvrclient"
+    library_@PLATFORM@="@LIBRARY_FILENAME@"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>@PLATFORM@</platform>
+    <license>GPL-2.0-or-later</license>
+    <source>https://github.com/kodi-pvr/pvr.tubitv</source>
+    <forum>https://forum.kodi.tv/forumdisplay.php?fid=167</forum>
+    <assets>
+      <icon>icon.png</icon>
+      <screenshot>resources/screenshots/screenshot-01.jpg</screenshot>
+      <screenshot>resources/screenshots/screenshot-02.jpg</screenshot>
+      <screenshot>resources/screenshots/screenshot-03.jpg</screenshot>
+    </assets>
+    <summary lang="bs_BA">Tubi TV PVR klijent</summary>
+    <summary lang="da_DK">Tubi TV PVR-klient</summary>
+    <summary lang="de_DE">Tubi TV PVR Client</summary>
+    <summary lang="en_GB">Tubi TV PVR Client</summary>
+    <summary lang="es_ES">Cliente PVR Tubi TV</summary>
+    <summary lang="es_MX">Cliente PVR de Tubi TV</summary>
+    <summary lang="fi_FI">Tubi TV PVR-pääte</summary>
+    <summary lang="fr_FR">Client PVR Tubi TV</summary>
+    <summary lang="hr_HR">Tubi TV PVR klijent</summary>
+    <summary lang="it_IT">Client PVR Tubi TV</summary>
+    <summary lang="ko_KR">Tubi TV PVR 클라이언트</summary>
+    <summary lang="pl_PL">Klient PVR Tubi TV</summary>
+    <summary lang="pt_BR">Cliente PVR Tubi TV</summary>
+    <summary lang="ru_RU">PVR-клиент Tubi TV</summary>
+    <summary lang="sv_SE">Tubi TV PVR-klient</summary>
+    <summary lang="uk_UA">PVR-клієнт Tubi TV</summary>
+    <summary lang="zh_CN">Tubi TV PVR 客户端</summary>
+    <description lang="bs_BA">Tubi TV PVR klijent. Napomena: Ovo nije službeni dodatak za Tubi TV i nije povezan s Tubi TV. Razvili su ga volonteri.</description>
+    <description lang="da_DK">Tubi TV PVR-klient. Bemærk: Dette er ikke et officielt Tubi TV-add-on og er ikke relateret til Tubi TV. Det er udviklet af frivillige.</description>
+    <description lang="de_DE">Tubi TV PVR Client. Hinweis: Dies ist kein offizielles Tubi TV-Addon und steht nicht in Verbindung zu Tubi TV. Es wurde von Freiwilligen entwickelt.</description>
+    <description lang="en_GB">Tubi TV PVR Client. Note: This is not an official Tubi TV add-on and not related to Tubi TV. It was developed by volunteers.</description>
+    <description lang="es_ES">Cliente PVR de Tubi TV. Nota: Este no es un complemento oficial de Tubi TV y no está relacionado con Tubi TV. Fue desarrollado por voluntarios.</description>
+    <description lang="es_MX">Cliente PVR de Tubi TV. Nota: Este no es un complemento oficial de plut.tv y no está relacionado a Tubi TV. Ha sido desarrollado por voluntarios.</description>
+    <description lang="fi_FI">Tubi TV PVR-pääte. Huomioi: Tämä ei ole virallinen Tubi TV-lisäosa, eikä Tubi TV ole osallistunut sen kehitykseen. Lisäosa on vapaaehtoisten kehittämä.</description>
+    <description lang="fr_FR">Client PVR Tubi TV . Remarque : ceci n&apos;est pas un module complémentaire officiel de Tubi TV et n&apos;est pas lié à Tubi TV. Il a été développé par des bénévoles.</description>
+    <description lang="hr_HR">Tubi TV PVR klijent. Napomena: Ovo nije službeni Tubi TV dodatak i nije povezan s Tubi TV. Razvijen je od strane dobrovoljaca.</description>
+    <description lang="it_IT">Client PVR Tubi TV. Nota: questo non è un add-on ufficiale di Tubi TV e non è correlato a Tubi TV. È stato sviluppato da volontari.</description>
+    <description lang="ko_KR">Tubi TV PVR 클라이언트. 참고 : 이것은 공식 Tubi TV 애드온이 아니며 Tubi TV와 관련이 없습니다. 자원 봉사자가 개발했습니다.</description>
+    <description lang="pl_PL">Klient PVR Tubi TV. Uwaga: to nie jest oficjalny dodatek Tubi TV i nie jest powiązany z Tubi TV. Został opracowany przez wolontariuszy.</description>
+    <description lang="pt_BR">Cliente PVR Plutão.tv. Nota: Este não é um complemento oficial do Tubi TV e não está relacionado ao Tubi TV. Foi desenvolvido por voluntários.</description>
+    <description lang="ru_RU">PVR-клиент Tubi TV. Примечание: это не официальное дополнение для Tubi TV и не связано с Tubi TV. Оно было разработано добровольцами.</description>
+    <description lang="sv_SE">Tubi TV PVR-klient. Obs! Detta är inte ett officiellt tillägg till Tubi TV och har ingen koppling till Tubi TV. Det har utvecklats av frivilliga.</description>
+    <description lang="uk_UA">PVR-клієнт Tubi TV. Примітка: це неофіційний додаток Tubi TV і він не пов’язаний з Tubi TV. Він був розроблений волонтерами.</description>
+    <description lang="zh_CN">Tubi TV PVR 客户端。注意：这不是官方的 Tubi TV 附加组件，与 Tubi TV 无关。它是由志愿者开发的。</description>
+  </extension>
+</addon>
