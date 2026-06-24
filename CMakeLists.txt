@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(pvr.amazontv)
+project(pvr.tubitv)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
 
@@ -22,6 +22,6 @@ set(PVRAMAZON_HEADERS
 addon_version(pvr.amazontv IPTV)
 add_definitions(-DIPTV_VERSION=${IPTV_VERSION})
 
-build_addon(pvr.amazontv PVRAMAZON DEPLIBS)
+build_addon(pvr.tubitv PVRAMAZON DEPLIBS)
 
 include(CPack)
