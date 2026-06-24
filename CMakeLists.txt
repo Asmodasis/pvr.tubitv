@@ -19,7 +19,7 @@ set(PVRAMAZON_HEADERS
                     src/Utils.h
                     src/TubitvData.h)
 
-addon_version(pvr.amazontv IPTV)
+addon_version(pvr.tubitv IPTV)
 add_definitions(-DIPTV_VERSION=${IPTV_VERSION})
 
 build_addon(pvr.tubitv PVRAMAZON DEPLIBS)
