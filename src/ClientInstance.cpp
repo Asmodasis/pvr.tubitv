@@ -63,7 +63,7 @@ PVR_ERROR CClientInstance::GetEPGForChannel(int channelUid, time_t start, time_t
 
 PVR_ERROR CClientInstance::GetChannelStreamProperties(
     const kodi::addon::PVRChannel& channel,
-    PVR_SOURCE /*source*/,
+    PVR_SOURCE source,
     std::vector<kodi::addon::PVRStreamProperty>& properties)
 {
   return m_data->GetChannelStreamProperties(channel, properties);
