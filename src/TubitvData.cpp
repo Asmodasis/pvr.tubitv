@@ -78,7 +78,6 @@ namespace
 
 TubitvData::TubitvData()
 {
-  /*
   m_userAgent = kodi::addon::GetSettingString("user_agent", kDefaultUA);
   m_deviceId  = kodi::addon::GetSettingString("deviceuuid", "");
 
@@ -105,9 +104,7 @@ TubitvData::TubitvData()
     }
     m_deviceId = uuid.str();
     kodi::addon::SetSettingString("deviceuuid", m_deviceId);
-    
   }
-    */
 }
 
 TubitvData::~TubitvData() = default;

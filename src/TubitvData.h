@@ -246,7 +246,7 @@ private:
   std::vector<TubiTV::Channel>   m_channels;
   std::map<int, int>             m_uidToIndex; ///< uid -> index into m_channels
 
-  //std::string m_deviceId;      ///< Persisted UUID, mirrors the device_id query param
+  std::string m_deviceId;      ///< Persisted UUID, mirrors the device_id query param
   std::string m_userAgent;
 
   time_t m_nextRefresh{0};
