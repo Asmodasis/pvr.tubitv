@@ -88,7 +88,7 @@ TubitvData::TubitvData()
 bool TubitvData::Init()
 {
   m_userAgent = kodi::addon::GetSettingString("user_agent", kDefaultUA);
-  m_deviceId  = kodi::addon::GetSettingString("device_id", "");
+  m_deviceId  = kodi::addon::GetSettingString("deviceuuid", "");
 
   if (m_deviceId.empty())
   {
@@ -112,7 +112,7 @@ bool TubitvData::Init()
         break;
     }
     m_deviceId = uuid.str();
-    kodi::addon::SetSettingString("device_id", m_deviceId);
+    kodi::addon::SetSettingString("deviceuuid", m_deviceId);
   }
 
   return true;
