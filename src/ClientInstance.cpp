@@ -12,6 +12,18 @@ CClientInstance::CClientInstance(const kodi::addon::IInstanceInfo& instance)
   : CInstancePVRClient(instance),
     m_data(std::make_unique<TubitvData>())
 {
+  // Init() reads/writes Kodi addon settings, which requires the addon
+  // instance to be fully attached — safe here in the constructor BODY
+  // (after CInstancePVRClient(instance) has completed), but NOT safe
+  // inside TubitvData's own constructor, since that runs as part of this
+  // class's member-initializer list, before this point. See the comment
+  // on TubitvData::Init() for the full explanation.
+  if (!m_data->Init())
+  {
+    kodi::Log(ADDON_LOG_ERROR, "CClientInstance: TubitvData::Init() failed.");
+    return;
+  }
+
   if (!m_data->LoadChannelData())
     kodi::Log(ADDON_LOG_ERROR,
               "CClientInstance: Initial channel load failed. Check network "
@@ -63,7 +75,7 @@ PVR_ERROR CClientInstance::GetEPGForChannel(int channelUid, time_t start, time_t
 
 PVR_ERROR CClientInstance::GetChannelStreamProperties(
     const kodi::addon::PVRChannel& channel,
-    PVR_SOURCE source,
+    PVR_SOURCE /*source*/,
     std::vector<kodi::addon::PVRStreamProperty>& properties)
 {
   return m_data->GetChannelStreamProperties(channel, properties);

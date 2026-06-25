@@ -133,6 +133,26 @@ public:
   ~TubitvData();
 
   /**
+   * @brief Perform addon-context-dependent setup (reading/writing Kodi
+   *        addon settings, generating and persisting device_id) that must
+   *        NOT run inside the constructor.
+   *
+   * kodi::addon::GetSettingString/SetSettingString are member functions
+   * that reach into the addon's settings-storage handle, which is only
+   * guaranteed valid once the owning CAddonBase/CInstancePVRClient has
+   * fully completed construction and is attached to Kodi's frontend. Since
+   * TubitvData is constructed from CClientInstance's member-initializer
+   * list — i.e. before CClientInstance's own constructor body runs and
+   * before CInstancePVRClient(instance) is guaranteed fully wired up —
+   * calling these from TubitvData's constructor risks calling through an
+   * addon-context pointer that isn't valid yet, which can segfault. Call
+   * this explicitly from CClientInstance's constructor BODY instead.
+   *
+   * @return true on success.
+   */
+  bool Init();
+
+  /**
    * @brief Full refresh: discover channel content_ids (if not already
    *        cached) from tubitv.com/live, then batch-fetch EPG+manifest
    *        data for all of them via the epg/programming endpoint.

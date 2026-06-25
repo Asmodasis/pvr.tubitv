@@ -78,8 +78,17 @@ namespace
 
 TubitvData::TubitvData()
 {
+  // Intentionally empty. See TubitvData::Init() — settings access (which
+  // requires the owning addon instance to be fully attached to Kodi) must
+  // not happen here, since this object is constructed from
+  // CClientInstance's member-initializer list, before CClientInstance's
+  // own constructor body has run.
+}
+
+bool TubitvData::Init()
+{
   m_userAgent = kodi::addon::GetSettingString("user_agent", kDefaultUA);
-  //m_deviceId  = kodi::addon::GetSettingString("device_id", "");
+  m_deviceId  = kodi::addon::GetSettingString("device_id", "");
 
   if (m_deviceId.empty())
   {
@@ -103,8 +112,10 @@ TubitvData::TubitvData()
         break;
     }
     m_deviceId = uuid.str();
-    //kodi::addon::SetSettingString("device_id", m_deviceId);
+    kodi::addon::SetSettingString("device_id", m_deviceId);
   }
+
+  return true;
 }
 
 TubitvData::~TubitvData() = default;
