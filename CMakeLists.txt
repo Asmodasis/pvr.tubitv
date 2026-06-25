@@ -10,13 +10,13 @@ include_directories(${KODI_INCLUDE_DIR}/.. # Hack way with "/..", need bigger Ko
 		    ${NLOHMANNJSON_INCLUDE_DIRS})
 
 set(PVRAMAZON_SOURCES
-                    src/Curl.cpp
-                    src/Utils.cpp
+                    src/addon.cpp
+                    src/ClientInstance.cpp
                     src/TubitvData.cpp)
 
 set(PVRAMAZON_HEADERS
-                    src/Curl.h
-                    src/Utils.h
+                    
+                    src/ClientInstance.h
                     src/TubitvData.h)
 
 addon_version(pvr.tubitv IPTV)
