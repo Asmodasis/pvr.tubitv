@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings version="1">
+  <section id="pvr.tubitv">
+    <category id="connection" label="30000">
+      <group id="1">
+        <setting id="device_id" type="string" label="30001" help="30051">
+          <level>1</level>
+          <default></default>
+          <control type="edit" format="string">
+            <heading>30001</heading>
+          </control>
+        </setting>
+        <setting id="user_agent" type="string" label="30002" help="30052">
+          <level>2</level>
+          <default>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36</default>
+          <control type="edit" format="string">
+            <heading>30002</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>
