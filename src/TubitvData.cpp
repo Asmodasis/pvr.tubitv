@@ -391,9 +391,9 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   // The reference scraper also normalizes a couple of JS-isms that are not
   // valid JSON before parsing: bare `undefined` -> `null`, and
   // `new Date("...")` wrapper calls -> just the quoted string.
-  jsonCandidate = std::regex_replace(jsonCandidate, std::regex(R"(\bundefined\b)"), "null");
-  jsonCandidate = std::regex_replace(
-      jsonCandidate, std::regex(R"(new Date\(\"([^\"]*)\"\))"), "\"$1\"");
+  //jsonCandidate = std::regex_replace(jsonCandidate, std::regex(R"(\bundefined\b)"), "null");
+  //jsonCandidate = std::regex_replace(
+  //    jsonCandidate, std::regex(R"(new Date\(\"([^\"]*)\"\))"), "\"$1\"");
 
   jsonOut = std::move(jsonCandidate);
   return true;
