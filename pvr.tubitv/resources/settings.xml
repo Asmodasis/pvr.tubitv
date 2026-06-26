@@ -6,6 +6,9 @@
         <setting id="device_id" type="string" label="30001" help="30051">
           <level>1</level>
           <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
           <control type="edit" format="string">
             <heading>30001</heading>
           </control>
