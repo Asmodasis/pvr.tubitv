@@ -373,7 +373,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
     return false;
   }
   */
-  std::string scriptContent = match[1].str();
+  //std::string scriptContent = match[1].str();
   //std::string scriptContent = "{}";
   // Isolate the JSON object literal: from the first '{' to the matching
   // last '}'. Mirrors the reference scraper's approach
