@@ -23,7 +23,7 @@
 #include <cctype>
 #include <iomanip>
 #include <random>
-//#include <regex>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -359,7 +359,6 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   // is confirmed (not guessed) from the reference scraper's BeautifulSoup
   // logic: it iterates all <script> tags and matches on
   // script.string.strip().startswith("window.__data").
-  /*
   static const std::regex kScriptRe(
       R"(<script[^>]*>\s*(window\.__data\s*=[\s\S]*?)</script>)", std::regex::icase);
 
@@ -371,9 +370,8 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
               "'window.__data' in the livetv page HTML.");
     return false;
   }
-  
-  std::string scriptContent = match[1].str();
-  */
+
+  //std::string scriptContent = match[1].str();
   std::string scriptContent = "{}";
   // Isolate the JSON object literal: from the first '{' to the matching
   // last '}'. Mirrors the reference scraper's approach
@@ -393,9 +391,9 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   // The reference scraper also normalizes a couple of JS-isms that are not
   // valid JSON before parsing: bare `undefined` -> `null`, and
   // `new Date("...")` wrapper calls -> just the quoted string.
-  //jsonCandidate = std::regex_replace(jsonCandidate, std::regex(R"(\bundefined\b)"), "null");
-  //jsonCandidate = std::regex_replace(
-  //    jsonCandidate, std::regex(R"(new Date\(\"([^\"]*)\"\))"), "\"$1\"");
+  jsonCandidate = std::regex_replace(jsonCandidate, std::regex(R"(\bundefined\b)"), "null");
+  jsonCandidate = std::regex_replace(
+      jsonCandidate, std::regex(R"(new Date\(\"([^\"]*)\"\))"), "\"$1\"");
 
   jsonOut = std::move(jsonCandidate);
   return true;
