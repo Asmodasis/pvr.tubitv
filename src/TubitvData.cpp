@@ -366,7 +366,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
       R"(<script[^>]*>\s*(window\.__data\s*=[\s\S]*?)<\/script>)", std::regex::icase);
 
   std::smatch match;
-  /*
+  
   if (!std::regex_search(html, match, kScriptRe))
   {
     kodi::Log(ADDON_LOG_ERROR,
@@ -374,9 +374,9 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
               "'window.__data' in the livetv page HTML.");
     return false;
   }
-  */
-  //std::string scriptContent = match[1].str();
-  std::string scriptContent = "{}";
+  
+  std::string scriptContent = match[1].str();
+  //std::string scriptContent = "{}";
   // Isolate the JSON object literal: from the first '{' to the matching
   // last '}'. Mirrors the reference scraper's approach
   // (target_script.find("{") ... target_script.rfind("}") + 1) rather than
@@ -389,7 +389,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
               "TubitvData: Could not isolate JSON object braces in window.__data script.");
     return false;
   }
-
+/*
   std::string jsonCandidate = scriptContent.substr(startIdx, endIdx - startIdx + 1);
 
   // The reference scraper also normalizes a couple of JS-isms that are not
@@ -400,6 +400,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
       jsonCandidate, std::regex(R"(new Date\(\"([^\"]*)\"\))"), "\"$1\"");
 
   jsonOut = std::move(jsonCandidate);
+*/
   return true;
 }
 
