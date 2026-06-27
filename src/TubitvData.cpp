@@ -361,6 +361,15 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   // is confirmed (not guessed) from the reference scraper's BeautifulSoup
   // logic: it iterates all <script> tags and matches on
   // script.string.strip().startswith("window.__data").
+  
+  std::string scriptContent{};
+  std::string::size_type kScriptRePosOne = html.find("<script>window.__data");  
+  std::string::size_type kScriptRePosTwo = html.find("</script>", kScriptRePosOne);  
+
+  for(std::string::size_type i = kScriptRePosOne; i < kScriptRePosTwo; ++i)
+  {
+    scriptContent.append(html.at(i));
+  }
   /*
   static const std::regex kScriptRe(
       R"(<script[^>]*>\s*(window\.__data\s*=[\s\S]*?)<\/script>)", std::regex::icase);
@@ -377,7 +386,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   
   std::string scriptContent = match[1].str();
   */
-  std::string scriptContent = "{}";
+  
   // Isolate the JSON object literal: from the first '{' to the matching
   // last '}'. Mirrors the reference scraper's approach
   // (target_script.find("{") ... target_script.rfind("}") + 1) rather than
