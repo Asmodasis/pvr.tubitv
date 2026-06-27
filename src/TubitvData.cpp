@@ -366,7 +366,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   std::string::size_type kScriptRePosOne = html.find("<script>window.__data");  
   std::string::size_type kScriptRePosTwo = html.find("</script>", kScriptRePosOne);  
 
-  for(int i = html.at(kScriptRePosOne); i < kScriptRePosTwo; ++i)
+  for(int i = kScriptRePosOne; i < kScriptRePosTwo; ++i)
   {
     scriptContent.push_back(html.at(i));
   }
