@@ -10,7 +10,7 @@
  *  See the header comment in TubitvData.h for the full breakdown of what's
  *  confirmed from which source.
  */
-#include <iostream> // remove
+
 #include "TubitvData.h"
 
 #include <kodi/AddonBase.h>
@@ -325,7 +325,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
 {
   std::string url = kLivePageUrl;
   url += BuildCurlHeaderOptions(m_userAgent);
-  std::cout << "{TEST} url == " << url << std::endl; //REMOVE
+
   kodi::vfs::CFile file;
   if (!file.OpenFile(url, ADDON_READ_NO_CACHE))
   {
@@ -348,6 +348,8 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
     }
   }
   file.Close();
+
+  kodi::Log(ADDON_LOG_DEBUG, "[FetchLivePageData] html: %s", html.c_str());
 
   if (html.empty())
   {
