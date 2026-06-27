@@ -368,7 +368,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
 
   for(int i = static_cast<int>(kScriptRePosOne); i < static_cast<int>(kScriptRePosTwo); ++i)
   {
-    scriptContent.append(html.at(i));
+    scriptContent.append(html[i]);
   }
   /*
   static const std::regex kScriptRe(
