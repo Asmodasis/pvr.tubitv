@@ -393,6 +393,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
 
   std::string jsonCandidate = scriptContent.substr(startIdx, endIdx - startIdx + 1);
 */
+std::string jsonCandidate = "";
   // The reference scraper also normalizes a couple of JS-isms that are not
   // valid JSON before parsing: bare `undefined` -> `null`, and
   // `new Date("...")` wrapper calls -> just the quoted string.
