@@ -390,9 +390,9 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
               "TubitvData: Could not isolate JSON object braces in window.__data script.");
     return false;
   }
-*/
-  std::string jsonCandidate = scriptContent.substr(startIdx, endIdx - startIdx + 1);
 
+  std::string jsonCandidate = scriptContent.substr(startIdx, endIdx - startIdx + 1);
+*/
   // The reference scraper also normalizes a couple of JS-isms that are not
   // valid JSON before parsing: bare `undefined` -> `null`, and
   // `new Date("...")` wrapper calls -> just the quoted string.
