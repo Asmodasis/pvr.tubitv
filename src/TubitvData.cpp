@@ -325,7 +325,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
 {
   std::string url = kLivePageUrl;
   url += BuildCurlHeaderOptions(m_userAgent);
-
+  std::cout << "{TEST} url == " << url << std::endl; //REMOVE
   kodi::vfs::CFile file;
   if (!file.OpenFile(url, ADDON_READ_NO_CACHE))
   {
@@ -361,10 +361,10 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   // script.string.strip().startswith("window.__data").
   
   static const std::regex kScriptRe(
-      R"(<script[^>]*>\s*(window\.__data\s*=[\s\S]*?)</script>)", std::regex::icase);
+      R"(<script[^>]*>\s*(window\.__data\s*=[\s\S]*?)<\/script>)", std::regex::icase);
 
   std::smatch match;
-  /*
+  
   if (!std::regex_search(html, match, kScriptRe))
   {
     kodi::Log(ADDON_LOG_ERROR,
@@ -372,7 +372,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
               "'window.__data' in the livetv page HTML.");
     return false;
   }
-  */
+  
   //std::string scriptContent = match[1].str();
   std::string scriptContent = "{}";
   // Isolate the JSON object literal: from the first '{' to the matching
