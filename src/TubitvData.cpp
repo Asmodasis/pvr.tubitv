@@ -381,6 +381,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   // last '}'. Mirrors the reference scraper's approach
   // (target_script.find("{") ... target_script.rfind("}") + 1) rather than
   // attempting a full JS-expression parse.
+  /*
   const size_t startIdx = scriptContent.find('{');
   const size_t endIdx   = scriptContent.rfind('}');
   if (startIdx == std::string::npos || endIdx == std::string::npos || endIdx < startIdx)
@@ -389,7 +390,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
               "TubitvData: Could not isolate JSON object braces in window.__data script.");
     return false;
   }
-/*
+*/
   std::string jsonCandidate = scriptContent.substr(startIdx, endIdx - startIdx + 1);
 
   // The reference scraper also normalizes a couple of JS-isms that are not
@@ -400,7 +401,6 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
       jsonCandidate, std::regex(R"(new Date\(\"([^\"]*)\"\))"), "\"$1\"");
 
   jsonOut = std::move(jsonCandidate);
-*/
   return true;
 }
 
