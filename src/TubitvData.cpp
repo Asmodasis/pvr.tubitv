@@ -362,14 +362,17 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   // logic: it iterates all <script> tags and matches on
   // script.string.strip().startswith("window.__data").
 
-  std::string scriptContent;
+  std::string scriptContent{};
   std::string::size_type kScriptRePosOne = html.find("<script>window.__data");  
   std::string::size_type kScriptRePosTwo = html.find("</script>", kScriptRePosOne);  
 
-  for(int i = static_cast<int>(kScriptRePosOne); i < static_cast<int>(kScriptRePosTwo); ++i)
+  for(int i = html.at(kScriptRePosOne); i < kScriptRePosTwo; ++i)
   {
-    scriptContent.append(html[i]);
+    scriptContent.append(html.at(i));
   }
+
+  scriptContent.append("</script>");
+  
   /*
   static const std::regex kScriptRe(
       R"(<script[^>]*>\s*(window\.__data\s*=[\s\S]*?)<\/script>)", std::regex::icase);
