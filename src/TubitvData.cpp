@@ -584,7 +584,7 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
       itPrograms != jRow.end() && itPrograms->is_array())
   {
     ParsePrograms(*itPrograms, out);
-    out.genre = MapGenreToKodi(out.title, out.programs.description)
+    out.genre = MapGenreToKodi(out.title, out.programs.at(description))
   }
 
 //MapGenreToKodi(const std::string& title, const std::string& description)
