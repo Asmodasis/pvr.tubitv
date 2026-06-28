@@ -354,7 +354,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   std::string scriptContent{};
   std::string::size_type scriptPosStart = html.find("<script>window.__data");  
 
-  if(scriptPosStart.find("<script>window.__data") == std::string::npos)
+  if(html.find("<script>window.__data") == std::string::npos)
   {
     kodi::Log(ADDON_LOG_ERROR,
               "TubitvData: Could not find a <script> tag starting with "
