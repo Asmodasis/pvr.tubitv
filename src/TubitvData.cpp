@@ -588,7 +588,7 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
 
 //MapGenreToKodi(const std::string& title, const std::string& description)
   
- if(!out.genre = MapGenreToKodi(out.title, out.description))
+ if(!out.genre = MapGenreToKodi(out.title, out.programs.description))
  {
       kodi::Log(ADDON_LOG_WARNING, "[ParseRow] no genre to map");
  }
