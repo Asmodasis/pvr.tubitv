@@ -352,9 +352,9 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   // Find the <script> tag whose content starts with "window.__data" 
 
   std::string scriptContent{};
-  std::string::size_type kScriptRePosOne = html.find("<script>window.__data");  
+  std::string::size_type scriptPosStart = html.find("<script>window.__data");  
 
-  if(str.find("<script>window.__data") == std::string::npos)
+  if(scriptPosStart.find("<script>window.__data") == std::string::npos)
   {
     kodi::Log(ADDON_LOG_ERROR,
               "TubitvData: Could not find a <script> tag starting with "
@@ -362,9 +362,9 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
     return false;
   }
   
-  std::string::size_type kScriptRePosTwo = html.find("</script>", kScriptRePosOne);  
+  std::string::size_type scriptPosEnd = html.find("</script>", scriptPosStart);  
 
-  for(int i = kScriptRePosOne; i < kScriptRePosTwo; ++i)
+  for(int i = scriptPosStart; i < scriptPosEnd; ++i)
   {
     scriptContent.push_back(html.at(i));
   }
