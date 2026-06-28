@@ -121,6 +121,7 @@ struct Channel
   std::string            manifestUrl; ///< video_resources[0].manifest.url — opaque, signed, used as-is
   int                    channelNumber{0};
   std::vector<EpgEntry>  programs;
+  int                    genre;
 };
 
 } // namespace TubiTV
@@ -158,7 +159,7 @@ private:
   static time_t ParseISO8601(const std::string& isoString);
   static std::string FirstThumbnail(const nlohmann::json& jImages);
   static int MapGenreToKodi(const std::string& title, const std::string& description);
-  
+
   int ChannelUidToIndex(int uid) const;
 
   // ── State ─────────────────────────────────────────────────────────────────

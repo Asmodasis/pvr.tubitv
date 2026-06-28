@@ -549,8 +549,7 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
   auto itTitle = jRow.find("title");
   if (itTitle == jRow.end() || !itTitle->is_string())
   {
-    kodi::Log(ADDON_LOG_WARNING,
-              "TubitvData: Row '%s' missing 'title' — skipping.", out.contentId.c_str());
+    kodi::Log(ADDON_LOG_WARNING, "TubitvData: Row '%s' missing 'title' — skipping.", out.contentId.c_str());
     return false;
   }
   out.title = itTitle->get<std::string>();
@@ -586,6 +585,13 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
   {
     ParsePrograms(*itPrograms, out);
   }
+
+//MapGenreToKodi(const std::string& title, const std::string& description)
+  
+ if(!out.genre = MapGenreToKodi(out.title, out.description))
+ {
+      kodi::Log(ADDON_LOG_WARNING, "[ParseRow] no genre to map");
+ }
 
   return true;
 }
@@ -679,16 +685,15 @@ std::string TubitvData::FirstThumbnail(const nlohmann::json& jImages)
 int TubitvData::MapGenreToKodi(const std::string& title, const std::string& description)
 {
   // Tubi's epg/programming response does not include a dedicated genre
-  // field on program entries (confirmed absent from the reference
-  // scraper's field usage) — only title/description/start/end. As with the
-  // Amazon addon, this is lightweight best-effort keyword inference, not a
-  // confident classification.
+  // field on program entries, key map searches for keywords and assigns
+  // a genre for grouping
   struct { const char* key; int type; } kMap[] = {
-    { "News",   EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS },
-    { "Sport",  EPG_EVENT_CONTENTMASK_SPORTS              },
-    { "Kids",   EPG_EVENT_CONTENTMASK_CHILDRENYOUTH       },
-    { "Movie",  EPG_EVENT_CONTENTMASK_MOVIEDRAMA          },
-    { "Comedy", EPG_EVENT_CONTENTMASK_SHOW                },
+    { "News",     EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS  },
+    { "Sport",    EPG_EVENT_CONTENTMASK_SPORTS              },
+    { "Kids",     EPG_EVENT_CONTENTMASK_CHILDRENYOUTH       },
+    { "Movie",    EPG_EVENT_CONTENTMASK_MOVIEDRAMA          },
+    { "Comedy",   EPG_EVENT_CONTENTMASK_SHOW                },
+    { "Science",  EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE  },
   };
   for (const auto& e : kMap)
   {
