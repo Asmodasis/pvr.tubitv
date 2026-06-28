@@ -132,33 +132,8 @@ public:
   TubitvData();
   ~TubitvData();
 
-  /**
-   * @brief Perform addon-context-dependent setup (reading/writing Kodi
-   *        addon settings, generating and persisting device_id) that must
-   *        NOT run inside the constructor.
-   *
-   * kodi::addon::GetSettingString/SetSettingString are member functions
-   * that reach into the addon's settings-storage handle, which is only
-   * guaranteed valid once the owning CAddonBase/CInstancePVRClient has
-   * fully completed construction and is attached to Kodi's frontend. Since
-   * TubitvData is constructed from CClientInstance's member-initializer
-   * list — i.e. before CClientInstance's own constructor body runs and
-   * before CInstancePVRClient(instance) is guaranteed fully wired up —
-   * calling these from TubitvData's constructor risks calling through an
-   * addon-context pointer that isn't valid yet, which can segfault. Call
-   * this explicitly from CClientInstance's constructor BODY instead.
-   *
-   * @return true on success.
-   */
   bool Init();
 
-  /**
-   * @brief Full refresh: discover channel content_ids (if not already
-   *        cached) from tubitv.com/live, then batch-fetch EPG+manifest
-   *        data for all of them via the epg/programming endpoint.
-   *
-   * @return true if at least one channel was loaded successfully.
-   */
   bool LoadChannelData();
 
   int        GetChannelCount() const;
@@ -169,96 +144,21 @@ public:
                                         std::vector<kodi::addon::PVRStreamProperty>& props);
 
 private:
-  // ── Step 1: channel discovery ─────────────────────────────────────────────
 
-  /**
-   * @brief Fetch https://tubitv.com/live and extract the window.__data JSON
-   *        blob embedded in a <script> tag.
-   *
-   * @param jsonOut  Output: the extracted JSON text (already isolated from
-   *                 surrounding "window.__data = ...;" JS assignment syntax).
-   * @return true if the script tag and a parseable JSON body were both found.
-   */
   bool FetchLivePageData(std::string& jsonOut);
-
-  /**
-   * @brief Walk parsed window.__data JSON to collect every content_id
-   *        referenced under epg.contentIdsByContainer[*][*].contents[].
-   *
-   * @param j   Parsed window.__data JSON (object or array — Tubi's page
-   *            bundler has been observed to wrap this either way; handle
-   *            both per the reference scraper implementation).
-   * @param out Output: deduplicated list of content_id strings.
-   * @return true if at least one content_id was found.
-   */
   bool ExtractContentIds(const nlohmann::json& j, std::vector<std::string>& out);
-
-  // ── Step 2: EPG + manifest batch fetch ────────────────────────────────────
-
-  /**
-   * @brief Fetch one batch of EPG/manifest data for up to ~150 content_ids
-   *        at a time (mirrors the reference scraper's batching to avoid
-   *        excessively long query strings).
-   *
-   * @param contentIds  Batch of content_id strings to request together.
-   * @param jsonOut     Output: raw JSON response text.
-   */
   bool FetchEpgProgramming(const std::vector<std::string>& contentIds, std::string& jsonOut);
-
-  /**
-   * @brief Parse one epg/programming response into m_channels.
-   *
-   * Walks: j["rows"][] -> Channel (via ParseRow)
-   *
-   * @param j  Parsed JSON root for one batch response.
-   * @param outChannels  Appended with each successfully parsed Channel.
-   */
   void ParseProgrammingResponse(const nlohmann::json& j,
                                 std::vector<TubiTV::Channel>& outChannels);
-
-  /**
-   * @brief Parse a single "rows[]" entry into a Channel (including its
-   *        nested "programs[]" schedule).
-   *
-   * Reads: content_id, title, images.thumbnail[0],
-   *        video_resources[0].manifest.url, programs[].
-   *
-   * @param jRow  One element of the "rows" array.
-   * @param out   Populated channel on success.
-   * @return true if mandatory fields (content_id, title) were present.
-   */
   bool ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out);
-
-  /**
-   * @brief Parse the "programs[]" array inside a row into channel.programs.
-   */
   void ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel& ch);
-
-  /**
-   * @brief Parse one programs[] entry.
-   *
-   * Reads: title, description, start_time / end_time (ISO-8601 UTC strings,
-   * confirmed format "%Y-%m-%dT%H:%M:%SZ" from the reference scraper's own
-   * strptime call).
-   */
   bool ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEntry& out);
 
-  // ── Utility ───────────────────────────────────────────────────────────────
 
-  /**
-   * @brief Parse an ISO-8601 UTC string ("2026-06-23T20:00:00Z") to time_t.
-   *        Confirmed format from the reference scraper's strptime() call —
-   *        NOT epoch milliseconds (unlike the unrelated Amazon Live TV API).
-   */
   static time_t ParseISO8601(const std::string& isoString);
-
-  /**
-   * @brief Pull the first element of images.thumbnail[] safely.
-   */
   static std::string FirstThumbnail(const nlohmann::json& jImages);
-
   static int MapGenreToKodi(const std::string& title, const std::string& description);
-
+  
   int ChannelUidToIndex(int uid) const;
 
   // ── State ─────────────────────────────────────────────────────────────────

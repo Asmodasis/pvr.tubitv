@@ -28,22 +28,22 @@
 #include <string>
 #include <vector>
 
-using json = nlohmann::json;
+
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 namespace
 {
-  constexpr const char* kLivePageUrl = "https://tubitv.com/live";
+  static const char* LIVE_PAGE_URL = "https://tubitv.com/live";
 
   // Confirmed from the user's captured request. The reference scraper uses
   // the equivalent https://tubitv.com/oz/epg/programming with fewer params;
   // we use the CDN-fronted host since that's what was directly observed in
   // real browser traffic.
-  constexpr const char* kEpgProgrammingUrl =
+  static const char* EPG_URL =
       "https://epg-cdn.production-public.tubi.io/content/epg/programming";
 
-  constexpr const char* kDefaultUA =
+  static const char* TUBI_TV_USER_AGENT =
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
       "AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/125.0.0.0 Safari/537.36";
@@ -87,7 +87,7 @@ TubitvData::TubitvData()
 
 bool TubitvData::Init()
 {
-  m_userAgent = kodi::addon::GetSettingString("user_agent", kDefaultUA);
+  m_userAgent = kodi::addon::GetSettingString("user_agent", TUBI_TV_USER_AGENT);
   m_deviceId  = kodi::addon::GetSettingString("device_id", "");
 
   if (m_deviceId.empty())
@@ -135,12 +135,12 @@ bool TubitvData::LoadChannelData()
     return false;
   }
 
-  json pageJson;
+  nlohmann::json pageJson;
   try
   {
-    pageJson = json::parse(pageJsonText);
+    pageJson = nlohmann::json::parse(pageJsonText);
   }
-  catch (const json::parse_error& e)
+  catch (const nlohmann::json::parse_error& e)
   {
     kodi::Log(ADDON_LOG_ERROR,
               "TubitvData: window.__data JSON parse_error at byte %zu — %s",
@@ -177,12 +177,12 @@ bool TubitvData::LoadChannelData()
       continue;
     }
 
-    json j;
+    nlohmann::json j;
     try
     {
-      j = json::parse(rawJson);
+      j = nlohmann::json::parse(rawJson);
     }
-    catch (const json::parse_error& e)
+    catch (const nlohmann::json::parse_error& e)
     {
       kodi::Log(ADDON_LOG_ERROR,
                 "TubitvData: EPG batch JSON parse_error at byte %zu — %s",
@@ -303,18 +303,10 @@ PVR_ERROR TubitvData::GetChannelStreamProperties(
     return PVR_ERROR_SERVER_ERROR;
   }
 
-  // The manifest URL (including its full query string — token, tb.sid,
-  // ap-fb, etc.) is taken verbatim from the EPG response, confirmed against
-  // the user's real captured URL to be a server-signed JWT we cannot and
-  // should not try to regenerate or simplify. Pass it through unmodified.
   props.emplace_back(PVR_STREAM_PROPERTY_STREAMURL, ch.manifestUrl);
   props.emplace_back(PVR_STREAM_PROPERTY_MIMETYPE,  "application/vnd.apple.mpegurl");
   props.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, "inputstream.adaptive");
   props.emplace_back("inputstream.adaptive.manifest_type", "hls");
-  // Tubi's live channels observed in the captured URL are unencrypted HLS
-  // (content_type=mp4, no drm/license params present) — no Widevine/PlayReady
-  // properties are set. If a specific channel later turns out to be DRM
-  // protected, this is the place to add license_type/license_key.
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -323,13 +315,13 @@ PVR_ERROR TubitvData::GetChannelStreamProperties(
 
 bool TubitvData::FetchLivePageData(std::string& jsonOut)
 {
-  std::string url = kLivePageUrl;
+  std::string url = LIVE_PAGE_URL;
   url += BuildCurlHeaderOptions(m_userAgent);
 
   kodi::vfs::CFile file;
   if (!file.OpenFile(url, ADDON_READ_NO_CACHE))
   {
-    kodi::Log(ADDON_LOG_ERROR, "TubitvData: Cannot open %s", kLivePageUrl);
+    kodi::Log(ADDON_LOG_ERROR, "TubitvData: Cannot open %s", LIVE_PAGE_URL);
     return false;
   }
 
@@ -353,33 +345,16 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
 
   if (html.empty())
   {
-    kodi::Log(ADDON_LOG_ERROR, "TubitvData: Empty response from %s", kLivePageUrl);
+    kodi::Log(ADDON_LOG_ERROR, "TubitvData: Empty response from %s", LIVE_PAGE_URL);
     return false;
   }
 
-  // Find the <script> tag whose content starts with "window.__data" — this
-  // is confirmed (not guessed) from the reference scraper's BeautifulSoup
-  // logic: it iterates all <script> tags and matches on
-  // script.string.strip().startswith("window.__data").
+  // Find the <script> tag whose content starts with "window.__data" 
 
   std::string scriptContent{};
   std::string::size_type kScriptRePosOne = html.find("<script>window.__data");  
-  std::string::size_type kScriptRePosTwo = html.find("</script>", kScriptRePosOne);  
 
-  for(int i = kScriptRePosOne; i < kScriptRePosTwo; ++i)
-  {
-    scriptContent.push_back(html.at(i));
-  }
-
-  scriptContent.append("</script>");
-  
-  /*
-  static const std::regex kScriptRe(
-      R"(<script[^>]*>\s*(window\.__data\s*=[\s\S]*?)<\/script>)", std::regex::icase);
-
-  std::smatch match;
-  
-  if (!std::regex_search(html, match, kScriptRe))
+  if(str.find("<script>window.__data") == std::string::npos)
   {
     kodi::Log(ADDON_LOG_ERROR,
               "TubitvData: Could not find a <script> tag starting with "
@@ -387,8 +362,15 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
     return false;
   }
   
-  std::string scriptContent = match[1].str();
-  */
+  std::string::size_type kScriptRePosTwo = html.find("</script>", kScriptRePosOne);  
+
+  for(int i = kScriptRePosOne; i < kScriptRePosTwo; ++i)
+  {
+    scriptContent.push_back(html.at(i));
+  }
+  // add the script on the end for the html page
+  scriptContent.append("</script>");
+  
   
   // Isolate the JSON object literal: from the first '{' to the matching
   // last '}'. Mirrors the reference scraper's approach
@@ -399,8 +381,7 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   const size_t endIdx   = scriptContent.rfind('}');
   if (startIdx == std::string::npos || endIdx == std::string::npos || endIdx < startIdx)
   {
-    kodi::Log(ADDON_LOG_ERROR,
-              "TubitvData: Could not isolate JSON object braces in window.__data script.");
+    kodi::Log(ADDON_LOG_ERROR, "TubitvData: Could not isolate JSON object braces in window.__data script.");
     return false;
   }
 
@@ -417,12 +398,12 @@ bool TubitvData::FetchLivePageData(std::string& jsonOut)
   return true;
 }
 
-bool TubitvData::ExtractContentIds(const json& j, std::vector<std::string>& out)
+bool TubitvData::ExtractContentIds(const nlohmann::json& j, std::vector<std::string>& out)
 {
   // Confirmed shape from the reference scraper: window.__data may be either
   // a single object or (per the scraper's defensive isinstance(list) check)
   // a list of such objects. Walk: [item.]epg.contentIdsByContainer[*][*].contents[]
-  auto walkOne = [&out](const json& item)
+  auto walkOne = [&out](const nlohmann::json& item)
   {
     auto itEpg = item.find("epg");
     if (itEpg == item.end() || !itEpg->is_object())
@@ -483,8 +464,7 @@ bool TubitvData::ExtractContentIds(const json& j, std::vector<std::string>& out)
 
 // ─── Private: Step 2 — EPG + manifest batch fetch ────────────────────────────
 
-bool TubitvData::FetchEpgProgramming(const std::vector<std::string>& contentIds,
-                                     std::string& jsonOut)
+bool TubitvData::FetchEpgProgramming(const std::vector<std::string>& contentIds, std::string& jsonOut)
 {
   std::string joinedIds;
   for (size_t i = 0; i < contentIds.size(); ++i)
@@ -494,7 +474,7 @@ bool TubitvData::FetchEpgProgramming(const std::vector<std::string>& contentIds,
     joinedIds += contentIds[i];
   }
 
-  std::string url = kEpgProgrammingUrl;
+  std::string url = EPG_URL;
   url += "?platform=web";
   url += "&device_id=";              url += UrlEncode(m_deviceId);
   url += "&limit_resolutions%5B%5D=h264_1080p";
@@ -506,9 +486,7 @@ bool TubitvData::FetchEpgProgramming(const std::vector<std::string>& contentIds,
   kodi::vfs::CFile file;
   if (!file.OpenFile(url, ADDON_READ_NO_CACHE))
   {
-    kodi::Log(ADDON_LOG_ERROR,
-              "TubitvData: Cannot open epg/programming URL for %zu content_ids.",
-              contentIds.size());
+    kodi::Log(ADDON_LOG_ERROR, "TubitvData: Cannot open epg/programming URL for %zu content_ids.", contentIds.size());
     return false;
   }
 
@@ -531,8 +509,7 @@ bool TubitvData::FetchEpgProgramming(const std::vector<std::string>& contentIds,
   return !jsonOut.empty();
 }
 
-void TubitvData::ParseProgrammingResponse(const json& j,
-                                          std::vector<TubiTV::Channel>& outChannels)
+void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<TubiTV::Channel>& outChannels)
 {
   // Confirmed envelope shape: {"rows": [...]}. The reference scraper reads
   // epg_json.get('rows', []) — NOT a bare top-level array.
@@ -552,7 +529,7 @@ void TubitvData::ParseProgrammingResponse(const json& j,
   }
 }
 
-bool TubitvData::ParseRow(const json& jRow, TubiTV::Channel& out)
+bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
 {
   // ── content_id — required ─────────────────────────────────────────────────
   auto itId = jRow.find("content_id");
@@ -613,7 +590,7 @@ bool TubitvData::ParseRow(const json& jRow, TubiTV::Channel& out)
   return true;
 }
 
-void TubitvData::ParsePrograms(const json& jPrograms, TubiTV::Channel& ch)
+void TubitvData::ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel& ch)
 {
   ch.programs.reserve(jPrograms.size());
   for (const auto& jProgram : jPrograms)
@@ -624,7 +601,7 @@ void TubitvData::ParsePrograms(const json& jPrograms, TubiTV::Channel& ch)
   }
 }
 
-bool TubitvData::ParseProgramEntry(const json& jProgram, TubiTV::EpgEntry& out)
+bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEntry& out)
 {
   auto itTitle = jProgram.find("title");
   if (itTitle == jProgram.end() || !itTitle->is_string())
@@ -689,7 +666,7 @@ time_t TubitvData::ParseISO8601(const std::string& isoString)
 #endif
 }
 
-std::string TubitvData::FirstThumbnail(const json& jImages)
+std::string TubitvData::FirstThumbnail(const nlohmann::json& jImages)
 {
   auto it = jImages.find("thumbnail");
   if (it == jImages.end() || !it->is_array() || it->empty())
