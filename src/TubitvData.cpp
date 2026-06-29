@@ -258,7 +258,7 @@ PVR_ERROR TubitvData::GetEPGForChannel(int uid, time_t start, time_t end, kodi::
   }
 
   int broadcastUid = uid * 100000;
-  for (const auto& channel : m_channels)
+  for (const auto& channel : m_channels[uid])
   {
     if (channel.endTime <= start || channel.startTime >= end)
       continue;
