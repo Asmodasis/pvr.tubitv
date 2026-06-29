@@ -120,18 +120,14 @@ bool TubitvData::Init()
 
 TubitvData::~TubitvData() = default;
 
-// ─── Public: LoadChannelData ──────────────────────────────────────────────────
 
 bool TubitvData::LoadChannelData()
 {
-  // ── Step 1: discover content_ids from the live page ──────────────────────
+  // Retrieve content_id's 
   std::string pageJsonText;
   if (!FetchLivePageData(pageJsonText))
   {
-    kodi::Log(ADDON_LOG_ERROR,
-              "TubitvData: Could not extract window.__data from tubitv.com/live. "
-              "Tubi may have changed their page bundling — see ExtractContentIds "
-              "comment in TubitvData.h.");
+    kodi::Log(ADDON_LOG_ERROR, "[LoadChannelData]: Could not extract window.__data from tubitv.com/live.");
     return false;
   }
 
@@ -151,15 +147,13 @@ bool TubitvData::LoadChannelData()
   std::vector<std::string> contentIds;
   if (!ExtractContentIds(pageJson, contentIds))
   {
-    kodi::Log(ADDON_LOG_ERROR,
-              "TubitvData: No content_ids found in window.__data.epg.contentIdsByContainer.");
+    kodi::Log(ADDON_LOG_ERROR, "TubitvData: No content_ids found in window.__data.epg.contentIdsByContainer.");
     return false;
   }
 
-  kodi::Log(ADDON_LOG_INFO,
-            "TubitvData: Discovered %zu channel content_ids.", contentIds.size());
+  kodi::Log(ADDON_LOG_INFO, "TubitvData: Discovered %zu channel content_ids.", contentIds.size());
 
-  // ── Step 2: batch-fetch EPG + manifest data ───────────────────────────────
+  // Fetch epg batch data
   std::vector<TubiTV::Channel> parsed;
   parsed.reserve(contentIds.size());
 
@@ -264,7 +258,7 @@ PVR_ERROR TubitvData::GetEPGForChannel(int uid, time_t start, time_t end, kodi::
   }
 
   int broadcastUid = uid * 100000;
-  for (const auto& entry : m_channels.at(idx))
+  for (const auto& entry : m_channels[uid])
   {
     if (entry.endTime <= start || entry.startTime >= end)
       continue;
