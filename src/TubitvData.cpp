@@ -205,7 +205,8 @@ bool TubitvData::LoadChannelData()
 
   {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_channels   = std::move(parsed);
+    //m_channels   = std::move(parsed);
+    m_channels   = parsed;
     m_uidToIndex = std::move(uidMap);
   }
 
