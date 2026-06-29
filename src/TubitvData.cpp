@@ -265,7 +265,7 @@ PVR_ERROR TubitvData::GetEPGForChannel(int uid, time_t start, time_t end,
   }
 
   int broadcastUid = uid * 100000;
-  for (const auto& entry : m_channels[idx].programs)
+  for (const auto& entry : m_channels[idx])
   {
     if (entry.endTime <= start || entry.startTime >= end)
       continue;
@@ -584,7 +584,7 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
       itPrograms != jRow.end() && itPrograms->is_array())
   {
     ParsePrograms(*itPrograms, out);
-    out.genre = MapGenreToKodi(out.title, out.programs.at(description))
+    //out.genre = MapGenreToKodi(out.title, out.programs.at(description))
   }
 
 //MapGenreToKodi(const std::string& title, const std::string& description)
@@ -602,12 +602,43 @@ void TubitvData::ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel&
   ch.programs.reserve(jPrograms.size());
   for (const auto& jProgram : jPrograms)
   {
-    TubiTV::EpgEntry entry;
-    if (ParseProgramEntry(jProgram, entry))
-      ch.programs.push_back(std::move(entry));
+
+    //if (ParseProgramEntry(jProgram, entry))
+      //ch.programs.push_back(std::move(entry));
+
+      auto itTitle = jProgram.find("title");
+      if (itTitle == jProgram.end() || !itTitle->is_string())
+      {
+        kodi::Log(ADDON_LOG_WARNING, "[ParsePrograms]: Program entry missing 'title' — skipping.");
+        return false;
+      }
+      ch.title = itTitle->get<std::string>();
+
+      auto itStart = jProgram.find("start_time");
+      auto itEnd   = jProgram.find("end_time");
+      if (itStart == jProgram.end() || !itStart->is_string() ||
+          itEnd   == jProgram.end() || !itEnd->is_string())
+      {
+        kodi::Log(ADDON_LOG_WARNING, "[ParsePrograms]: Program '%s' missing start_time/end_time — skipping.", ch.title.c_str());
+        return false;
+      }
+
+      ch.startTime = ParseISO8601(itStart->get<std::string>());
+      ch.endTime   = ParseISO8601(itEnd->get<std::string>());
+
+      if (ch.startTime == 0 || ch.endTime == 0 || ch.endTime <= ch.startTime)
+      {
+        kodi::Log(ADDON_LOG_WARNING,"[ParsePrograms]: Program '%s' has invalid time range — skipping.", ch.title.c_str());
+      }
+
+      if (auto it = jProgram.find("description"); it != jProgram.end() && it->is_string())
+        ch.description = it->get<std::string>();
+
+
   }
 }
 
+/*
 bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEntry& out)
 {
   auto itTitle = jProgram.find("title");
@@ -645,7 +676,7 @@ bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEn
 
   return true;
 }
-
+*/
 // ─── Private: Utility ────────────────────────────────────────────────────────
 
 time_t TubitvData::ParseISO8601(const std::string& isoString)

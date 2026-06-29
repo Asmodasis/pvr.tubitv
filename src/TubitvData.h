@@ -104,24 +104,28 @@ namespace TubiTV
 {
 
 // ─── EPG entry (one "programs[]" item for a channel row) ─────────────────────
-struct EpgEntry
+/*struct EpgEntry
 {
   std::string title;
   std::string description;
   time_t      startTime{0}; ///< Parsed from ISO-8601 UTC string
   time_t      endTime{0};
-};
+};*/
 
 // ─── Channel (one "rows[]" item — a Tubi live channel) ───────────────────────
 struct Channel
 {
   std::string            contentId;   ///< e.g. "555129" — used as the stable channel key
   std::string            title;
+  std::string            description;
+  int                    genre;
   std::string            logoUrl;     ///< images.thumbnail[0]
   std::string            manifestUrl; ///< video_resources[0].manifest.url — opaque, signed, used as-is
   int                    channelNumber{0};
-  std::vector<EpgEntry>  programs;
-  int                    genre;
+  //std::vector<EpgEntry>  programs;
+
+  time_t      startTime{0}; ///< Parsed from ISO-8601 UTC string
+  time_t      endTime{0};
 };
 
 } // namespace TubiTV
@@ -153,7 +157,7 @@ private:
                                 std::vector<TubiTV::Channel>& outChannels);
   bool ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out);
   void ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel& ch);
-  bool ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEntry& out);
+  //bool ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEntry& out);
 
 
   static time_t ParseISO8601(const std::string& isoString);
