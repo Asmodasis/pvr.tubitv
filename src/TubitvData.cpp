@@ -252,20 +252,19 @@ PVR_ERROR TubitvData::GetChannels(bool bRadio, kodi::addon::PVRChannelsResultSet
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR TubitvData::GetEPGForChannel(int uid, time_t start, time_t end,
-                                       kodi::addon::PVREPGTagsResultSet& results)
+PVR_ERROR TubitvData::GetEPGForChannel(int uid, time_t start, time_t end, kodi::addon::PVREPGTagsResultSet& results)
 {
   std::lock_guard<std::mutex> lock(m_mutex);
 
   const int idx = ChannelUidToIndex(uid);
   if (idx < 0)
   {
-    kodi::Log(ADDON_LOG_WARNING, "TubitvData: GetEPG — unknown channel uid %d", uid);
+    kodi::Log(ADDON_LOG_WARNING, "[GetEPGForChannel]: GetEPG — unknown channel uid %d", uid);
     return PVR_ERROR_INVALID_PARAMETERS;
   }
 
   int broadcastUid = uid * 100000;
-  for (const auto& entry : m_channels[idx])
+  for (const auto& entry : m_channels.at(idx))
   {
     if (entry.endTime <= start || entry.startTime >= end)
       continue;
