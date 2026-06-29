@@ -157,7 +157,7 @@ private:
                                 std::vector<TubiTV::Channel>& outChannels);
   bool ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out);
   void ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel& ch);
-  //bool ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEntry& out);
+  bool ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::Channel& out);
 
 
   static time_t ParseISO8601(const std::string& isoString);
