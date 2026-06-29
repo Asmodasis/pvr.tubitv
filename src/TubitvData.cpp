@@ -592,11 +592,11 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
 
 void TubitvData::ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel& ch)
 {
-  ch.programs.reserve(jPrograms.size());
+  //ch.programs.reserve(jPrograms.size());
   for (const auto& jProgram : jPrograms)
   {
     //TubiTV::EpgEntry entry;
-    if (ParseProgramEntry(jProgram, entry)){}
+    if (ParseProgramEntry(jProgram, ch)){}
       //ch.programs.push_back(std::move(entry));
      
   }
