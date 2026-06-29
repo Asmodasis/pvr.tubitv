@@ -258,19 +258,19 @@ PVR_ERROR TubitvData::GetEPGForChannel(int uid, time_t start, time_t end, kodi::
   }
 
   int broadcastUid = uid * 100000;
-  for (const auto& entry : m_channels[uid])
+  for (const auto& channel : m_channels)
   {
-    if (entry.endTime <= start || entry.startTime >= end)
+    if (channel.endTime <= start || channel.startTime >= end)
       continue;
 
     kodi::addon::PVREPGTag tag;
     tag.SetUniqueBroadcastId(broadcastUid++);
     tag.SetUniqueChannelId(uid);
-    tag.SetTitle(entry.title);
-    tag.SetPlot(entry.description);
-    tag.SetStartTime(entry.startTime);
-    tag.SetEndTime(entry.endTime);
-    tag.SetGenreType(MapGenreToKodi(entry.title, entry.description));
+    tag.SetTitle(channel.title);
+    tag.SetPlot(channel.description);
+    tag.SetStartTime(channel.startTime);
+    tag.SetEndTime(channel.endTime);
+    tag.SetGenreType(MapGenreToKodi(channel.title, channel.description));
     results.Add(tag);
   }
   return PVR_ERROR_NO_ERROR;
