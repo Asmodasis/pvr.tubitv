@@ -599,7 +599,7 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
 
 void TubitvData::ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel& ch)
 {
-  ch.programs.reserve(jPrograms.size());
+  //ch.programs.reserve(jPrograms.size());
   for (const auto& jProgram : jPrograms)
   {
 
@@ -610,7 +610,6 @@ void TubitvData::ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel&
       if (itTitle == jProgram.end() || !itTitle->is_string())
       {
         kodi::Log(ADDON_LOG_WARNING, "[ParsePrograms]: Program entry missing 'title' — skipping.");
-        return false;
       }
       ch.title = itTitle->get<std::string>();
 
@@ -620,7 +619,6 @@ void TubitvData::ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel&
           itEnd   == jProgram.end() || !itEnd->is_string())
       {
         kodi::Log(ADDON_LOG_WARNING, "[ParsePrograms]: Program '%s' missing start_time/end_time — skipping.", ch.title.c_str());
-        return false;
       }
 
       ch.startTime = ParseISO8601(itStart->get<std::string>());
