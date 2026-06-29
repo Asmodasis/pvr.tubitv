@@ -120,14 +120,18 @@ bool TubitvData::Init()
 
 TubitvData::~TubitvData() = default;
 
+// ─── Public: LoadChannelData ──────────────────────────────────────────────────
 
 bool TubitvData::LoadChannelData()
 {
-  // Retrieve content_id's 
+  // ── Step 1: discover content_ids from the live page ──────────────────────
   std::string pageJsonText;
   if (!FetchLivePageData(pageJsonText))
   {
-    kodi::Log(ADDON_LOG_ERROR, "[LoadChannelData]: Could not extract window.__data from tubitv.com/live.");
+    kodi::Log(ADDON_LOG_ERROR,
+              "TubitvData: Could not extract window.__data from tubitv.com/live. "
+              "Tubi may have changed their page bundling — see ExtractContentIds "
+              "comment in TubitvData.h.");
     return false;
   }
 
@@ -147,13 +151,15 @@ bool TubitvData::LoadChannelData()
   std::vector<std::string> contentIds;
   if (!ExtractContentIds(pageJson, contentIds))
   {
-    kodi::Log(ADDON_LOG_ERROR, "TubitvData: No content_ids found in window.__data.epg.contentIdsByContainer.");
+    kodi::Log(ADDON_LOG_ERROR,
+              "TubitvData: No content_ids found in window.__data.epg.contentIdsByContainer.");
     return false;
   }
 
-  kodi::Log(ADDON_LOG_INFO, "TubitvData: Discovered %zu channel content_ids.", contentIds.size());
+  kodi::Log(ADDON_LOG_INFO,
+            "TubitvData: Discovered %zu channel content_ids.", contentIds.size());
 
-  // Fetch epg batch data
+  // ── Step 2: batch-fetch EPG + manifest data ───────────────────────────────
   std::vector<TubiTV::Channel> parsed;
   parsed.reserve(contentIds.size());
 
@@ -205,8 +211,7 @@ bool TubitvData::LoadChannelData()
 
   {
     std::lock_guard<std::mutex> lock(m_mutex);
-    //m_channels   = std::move(parsed);
-    m_channels   = parsed;
+    m_channels   = std::move(parsed);
     m_uidToIndex = std::move(uidMap);
   }
 
@@ -247,31 +252,32 @@ PVR_ERROR TubitvData::GetChannels(bool bRadio, kodi::addon::PVRChannelsResultSet
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR TubitvData::GetEPGForChannel(int uid, time_t start, time_t end, kodi::addon::PVREPGTagsResultSet& results)
+PVR_ERROR TubitvData::GetEPGForChannel(int uid, time_t start, time_t end,
+                                       kodi::addon::PVREPGTagsResultSet& results)
 {
   std::lock_guard<std::mutex> lock(m_mutex);
 
   const int idx = ChannelUidToIndex(uid);
   if (idx < 0)
   {
-    kodi::Log(ADDON_LOG_WARNING, "[GetEPGForChannel]: GetEPG — unknown channel uid %d", uid);
+    kodi::Log(ADDON_LOG_WARNING, "TubitvData: GetEPG — unknown channel uid %d", uid);
     return PVR_ERROR_INVALID_PARAMETERS;
   }
 
   int broadcastUid = uid * 100000;
-  for (const auto& channel : m_channels[uid])
+  for (const auto& entry : m_channels[idx].programs)
   {
-    if (channel.endTime <= start || channel.startTime >= end)
+    if (entry.endTime <= start || entry.startTime >= end)
       continue;
 
     kodi::addon::PVREPGTag tag;
     tag.SetUniqueBroadcastId(broadcastUid++);
     tag.SetUniqueChannelId(uid);
-    tag.SetTitle(channel.title);
-    tag.SetPlot(channel.description);
-    tag.SetStartTime(channel.startTime);
-    tag.SetEndTime(channel.endTime);
-    tag.SetGenreType(MapGenreToKodi(channel.title, channel.description));
+    tag.SetTitle(entry.title);
+    tag.SetPlot(entry.description);
+    tag.SetStartTime(entry.startTime);
+    tag.SetEndTime(entry.endTime);
+    tag.SetGenreType(MapGenreToKodi(entry.title, entry.description));
     results.Add(tag);
   }
   return PVR_ERROR_NO_ERROR;
@@ -578,7 +584,7 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
       itPrograms != jRow.end() && itPrograms->is_array())
   {
     ParsePrograms(*itPrograms, out);
-    //out.genre = MapGenreToKodi(out.title, out.programs.at(description))
+    out.genre = MapGenreToKodi(out.title, out.programs.at(description))
   }
 
 //MapGenreToKodi(const std::string& title, const std::string& description)
@@ -593,17 +599,16 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
 
 void TubitvData::ParsePrograms(const nlohmann::json& jPrograms, TubiTV::Channel& ch)
 {
-  //ch.programs.reserve(jPrograms.size());
+  ch.programs.reserve(jPrograms.size());
   for (const auto& jProgram : jPrograms)
   {
-    //TubiTV::EpgEntry entry;
-    if (ParseProgramEntry(jProgram, ch)){}
-      //ch.programs.push_back(std::move(entry));
-     
+    TubiTV::EpgEntry entry;
+    if (ParseProgramEntry(jProgram, entry))
+      ch.programs.push_back(std::move(entry));
   }
 }
 
-bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::Channel& out)
+bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEntry& out)
 {
   auto itTitle = jProgram.find("title");
   if (itTitle == jProgram.end() || !itTitle->is_string())
@@ -640,6 +645,7 @@ bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::Chann
 
   return true;
 }
+
 // ─── Private: Utility ────────────────────────────────────────────────────────
 
 time_t TubitvData::ParseISO8601(const std::string& isoString)
