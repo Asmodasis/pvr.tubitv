@@ -121,7 +121,8 @@ struct Channel
   std::string            manifestUrl; ///< video_resources[0].manifest.url — opaque, signed, used as-is
   int                    channelNumber{0};
   std::vector<EpgEntry>  programs;
-  int                    genre;
+  //int                    genre;
+  kodi::addon::PVRChannelGroup m_group;
 };
 
 } // namespace TubiTV
@@ -166,6 +167,8 @@ private:
   mutable std::mutex             m_mutex;
   std::vector<TubiTV::Channel>   m_channels;
   std::map<int, int>             m_uidToIndex; ///< uid -> index into m_channels
+  unsigned short                 m_genreCount;
+  std::vector<std::string>       m_genreList;
 
   std::string m_deviceId;      ///< Persisted UUID, mirrors the device_id query param
   std::string m_userAgent;

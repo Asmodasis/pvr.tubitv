@@ -114,7 +114,7 @@ bool TubitvData::Init()
     m_deviceId = uuid.str();
     kodi::addon::SetSettingString("device_id", m_deviceId);
   }
-
+  m_genreCount = 0;
   return true;
 }
 
@@ -584,7 +584,7 @@ bool TubitvData::ParseRow(const nlohmann::json& jRow, TubiTV::Channel& out)
       itPrograms != jRow.end() && itPrograms->is_array())
   {
     ParsePrograms(*itPrograms, out);
-    out.genre = MapGenreToKodi(out.title, out.programs[out.programs.end()].description)
+    //out.genre = MapGenreToKodi(out.title, jRow.find("description"))
   }
 
 //MapGenreToKodi(const std::string& title, const std::string& description)
@@ -641,7 +641,18 @@ bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEn
   }
 
   if (auto it = jProgram.find("description"); it != jProgram.end() && it->is_string())
+  {
     out.description = it->get<std::string>();
+    m_channels.m_group.SetGroupName(out.description);
+    
+    if (!(std::find(m_genreList.begin(), m_genreList.end(), out.description) != m_genreList.end()))
+    {
+        // Unique genre located
+        m_genreList.emplace_back(categoryName);
+        m_genreCount++;
+    }
+  }
+
 
   return true;
 }
