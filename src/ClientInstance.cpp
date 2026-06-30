@@ -89,11 +89,11 @@ PVR_ERROR CClientInstance::GetChannelGroupsAmount(int& amount)
 
 PVR_ERROR CClientInstance::GetChannelGroups(bool radio, kodi::addon::PVRChannelGroupsResultSet& results)
 {
-  for (unsigned short i = 0; i < this->m_genreList.size(); ++i)
+  for (unsigned short i = 0; i < m_data->m_genreList.size(); ++i)
   {
     kodi::addon::PVRChannelGroup group;
     group.SetIsRadio(false);
-    group.SetGroupName(this->m_genreList[i]);
+    group.SetGroupName(m_data->m_genreList[i]);
     group.SetPosition(i);
     // Give it now to Kodi
     results.Add(group);
@@ -106,12 +106,12 @@ PVR_ERROR CClientInstance::GetChannelGroupMembers(const kodi::addon::PVRChannelG
 {
   unsigned short iChannelPtr = 0;
 
-  for (const auto& myGroup : this->m_channels.m_group)
+  for (const auto& myGroup : m_data->m_channels.m_group)
   {
     if (myGroup.GetGroupName() == group.GetGroupName())
     {
      
-        Channel &channel = this->m_channels[iChannelPtr];
+        TubiTV::Channel &channel = m_data->m_channels[iChannelPtr];
         kodi::addon::PVRChannelGroupMember kodiGroupMember;
         kodiGroupMember.SetGroupName(group.GetGroupName());
         kodiGroupMember.SetChannelUniqueId(channel.contentId);
