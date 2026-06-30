@@ -19,7 +19,7 @@
 
 #include <memory>
 
-class CClientInstance : public kodi::addon::CInstancePVRClient : public TubiTV
+class CClientInstance : public kodi::addon::CInstancePVRClient : public TubitvData
 {
 public:
   explicit CClientInstance(const kodi::addon::IInstanceInfo& instance);
