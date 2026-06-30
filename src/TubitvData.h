@@ -145,7 +145,7 @@ public:
   PVR_ERROR  GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
                                         std::vector<kodi::addon::PVRStreamProperty>& props);
 
-private:
+protected:
 
   bool FetchLivePageData(std::string& jsonOut);
   bool ExtractContentIds(const nlohmann::json& j, std::vector<std::string>& out);

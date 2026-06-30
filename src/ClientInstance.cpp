@@ -106,9 +106,9 @@ PVR_ERROR CClientInstance::GetChannelGroupMembers(const kodi::addon::PVRChannelG
 {
   unsigned short iChannelPtr = 0;
 
-  for (const auto& myGroup : m_data->m_channels.m_group)
+  for (const auto& myGroup : m_data->m_channels)
   {
-    if (myGroup.GetGroupName() == group.GetGroupName())
+    if (myGroup.m_channels[iChannelPtr].GetGroupName() == group.GetGroupName())
     {
      
         TubiTV::Channel &channel = m_data->m_channels[iChannelPtr];
