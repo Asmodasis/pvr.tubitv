@@ -105,17 +105,17 @@ PVR_ERROR CClientInstance::GetChannelGroupMembers(const kodi::addon::PVRChannelG
                                               kodi::addon::PVRChannelGroupMembersResultSet& results)
 {
   unsigned short iChannelPtr = 0;
-
-  for (const auto& chann : m_data->getM_channels())
+  std::vector<TubiTV::Channel> m_chann =  m_data->getM_channels();
+  for (const auto& chann : m_chann)
   {
     if (chann.m_group.GetGroupName() == group.GetGroupName())
     {
      
-        TubiTV::Channel &channel = m_data->m_channels[iChannelPtr];
+        //TubiTV::Channel &channel = m_chann[iChannelPtr];
         kodi::addon::PVRChannelGroupMember kodiGroupMember;
         kodiGroupMember.SetGroupName(group.GetGroupName());
-        kodiGroupMember.SetChannelUniqueId(channel.contentId);
-        kodiGroupMember.SetChannelNumber(channel.channelNumber);
+        kodiGroupMember.SetChannelUniqueId(std::stoi(chann.contentId));
+        kodiGroupMember.SetChannelNumber(chann.channelNumber);
  
         results.Add(kodiGroupMember);
 
