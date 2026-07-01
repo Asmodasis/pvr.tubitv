@@ -83,13 +83,13 @@ PVR_ERROR CClientInstance::GetChannelStreamProperties(
 
 PVR_ERROR CClientInstance::GetChannelGroupsAmount(int& amount)
 {
-  amount = m_data->m_genreCount;
+  amount = m_data->getGenreCount();
   return PVR_ERROR_NO_ERROR;
 }
 
 PVR_ERROR CClientInstance::GetChannelGroups(bool radio, kodi::addon::PVRChannelGroupsResultSet& results)
 {
-  for (unsigned short i = 0; i < m_data->m_genreList.size(); ++i)
+  for (unsigned short i = 0; i < m_data->getGenreList().size(); ++i)
   {
     kodi::addon::PVRChannelGroup group;
     group.SetIsRadio(false);
@@ -106,7 +106,7 @@ PVR_ERROR CClientInstance::GetChannelGroupMembers(const kodi::addon::PVRChannelG
 {
   unsigned short iChannelPtr = 0;
 
-  for (const auto& chann : m_data->m_channels)
+  for (const auto& chann : m_data->getM_channels())
   {
     if (chann.m_group.GetGroupName() == group.GetGroupName())
     {

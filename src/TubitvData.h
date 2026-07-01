@@ -144,9 +144,12 @@ public:
                               kodi::addon::PVREPGTagsResultSet& results);
   PVR_ERROR  GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
                                         std::vector<kodi::addon::PVRStreamProperty>& props);
+  
+  std::vector<TubiTV::Channel> getM_channels();
+  unsigned short getGenreCount();
+  std::vector<std::string> getGenreList();
 
-  unsigned short                 m_genreCount;
-  std::vector<std::string>       m_genreList;                                 
+
 private:
 
   bool FetchLivePageData(std::string& jsonOut);
@@ -169,7 +172,8 @@ private:
   mutable std::mutex             m_mutex;
   std::vector<TubiTV::Channel>   m_channels;
   std::map<int, int>             m_uidToIndex; ///< uid -> index into m_channels
-
+  unsigned short                 m_genreCount;
+  std::vector<std::string>       m_genreList;
 
   std::string m_deviceId;      ///< Persisted UUID, mirrors the device_id query param
   std::string m_userAgent;

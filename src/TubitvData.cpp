@@ -644,7 +644,7 @@ bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEn
   {
     out.description = it->get<std::string>();
     m_channels.m_group.SetGroupName(out.description);
-    
+
     if (!(std::find(m_genreList.begin(), m_genreList.end(), out.description) != m_genreList.end()))
     {
         // Unique genre located
@@ -719,4 +719,18 @@ int TubitvData::ChannelUidToIndex(int uid) const
 {
   auto it = m_uidToIndex.find(uid);
   return (it != m_uidToIndex.end()) ? it->second : -1;
+}
+
+std::vector<TubiTV::Channel> TubitvData::getM_channels()
+{
+  return m_channels;
+}
+
+unsigned short TubitvData::getGenreCount()
+{
+  return m_genreCount;
+}
+std::vector<std::string> TubitvData::getGenreList()
+{
+  return m_genreList;
 }
