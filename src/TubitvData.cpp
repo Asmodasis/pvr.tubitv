@@ -648,8 +648,10 @@ bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEn
     if (!(std::find(m_genreList.begin(), m_genreList.end(), out.description) != m_genreList.end()))
     {
         // Unique genre located
+        kodi::Log(ADDON_LOG_DEBUG, "[ParsePrograms] out.description is %d", out.description);
         m_genreList.emplace_back(out.description);
         m_genreCount++;
+        kodi::Log(ADDON_LOG_DEBUG, "[ParsePrograms] m_genreCount is %d", m_genreCount);
     }
   }
 
