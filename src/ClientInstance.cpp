@@ -83,7 +83,9 @@ PVR_ERROR CClientInstance::GetChannelStreamProperties(
 
 PVR_ERROR CClientInstance::GetChannelGroupsAmount(int& amount)
 {
+  kodi::Log(ADDON_LOG_DEBUG, "[GetChannelGroupsAmount] m_data->getGenreCount() is %d", m_data->getGenreCount());
   amount = m_data->getGenreCount();
+  
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -105,6 +107,7 @@ PVR_ERROR CClientInstance::GetChannelGroupMembers(const kodi::addon::PVRChannelG
                                               kodi::addon::PVRChannelGroupMembersResultSet& results)
 {
   unsigned short iChannelPtr = 0;
+
   std::vector<TubiTV::Channel> m_chann =  m_data->getM_channels();
   for (const auto& chann : m_chann)
   {
