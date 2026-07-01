@@ -93,7 +93,7 @@ PVR_ERROR CClientInstance::GetChannelGroups(bool radio, kodi::addon::PVRChannelG
   {
     kodi::addon::PVRChannelGroup group;
     group.SetIsRadio(false);
-    group.SetGroupName(m_data->m_data->getGenreList()[i]);
+    group.SetGroupName(m_data->getGenreList()[i]);
     group.SetPosition(i);
     // Give it now to Kodi
     results.Add(group);
