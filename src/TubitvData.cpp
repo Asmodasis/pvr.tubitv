@@ -643,12 +643,12 @@ bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEn
   if (auto it = jProgram.find("description"); it != jProgram.end() && it->is_string())
   {
     out.description = it->get<std::string>();
-    m_channels.m_group.SetGroupName(out.description);
+    out.m_group.SetGroupName(out.description);
 
     if (!(std::find(m_genreList.begin(), m_genreList.end(), out.description) != m_genreList.end()))
     {
         // Unique genre located
-        m_genreList.emplace_back(categoryName);
+        m_genreList.emplace_back(out.description);
         m_genreCount++;
     }
   }

@@ -110,6 +110,7 @@ struct EpgEntry
   std::string description;
   time_t      startTime{0}; ///< Parsed from ISO-8601 UTC string
   time_t      endTime{0};
+  kodi::addon::PVRChannelGroup m_group;
 };
 
 // ─── Channel (one "rows[]" item — a Tubi live channel) ───────────────────────
@@ -122,7 +123,7 @@ struct Channel
   int                    channelNumber{0};
   std::vector<EpgEntry>  programs;
   //int                    genre;
-  kodi::addon::PVRChannelGroup m_group;
+
 };
 
 } // namespace TubiTV
