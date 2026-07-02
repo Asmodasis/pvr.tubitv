@@ -80,7 +80,7 @@ PVR_ERROR CClientInstance::GetChannelStreamProperties(
 {
   return m_data->GetChannelStreamProperties(channel, properties);
 }
-
+/*
 PVR_ERROR CClientInstance::GetChannelGroupsAmount(int& amount)
 {
   kodi::Log(ADDON_LOG_DEBUG, "[GetChannelGroupsAmount] m_data->getGenreCount() is %d", m_data->getGenreCount());
@@ -127,3 +127,4 @@ PVR_ERROR CClientInstance::GetChannelGroupMembers(const kodi::addon::PVRChannelG
   }
   return PVR_ERROR_NO_ERROR;
 }
+*/

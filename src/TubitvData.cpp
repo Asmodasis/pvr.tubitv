@@ -643,6 +643,7 @@ bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEn
   if (auto it = jProgram.find("description"); it != jProgram.end() && it->is_string())
   {
     out.description = it->get<std::string>();
+    /*
     out.m_group.SetGroupName(out.description);
 
     if (!(std::find(m_genreList.begin(), m_genreList.end(), out.description) != m_genreList.end()))
@@ -653,6 +654,7 @@ bool TubitvData::ParseProgramEntry(const nlohmann::json& jProgram, TubiTV::EpgEn
         m_genreCount++;
         kodi::Log(ADDON_LOG_DEBUG, "[ParsePrograms] m_genreCount is %d", m_genreCount);
     }
+    */
   }
 
 
