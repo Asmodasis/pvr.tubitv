@@ -528,7 +528,7 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
     if (ParseRow(jRow, ch))
     {
       
-      ch.m_group.SetGroupName(ch.programs[ch.programs.end()].description);
+      ch.m_group.SetGroupName(ch.programs.end().description);
       
       if (!(std::find(m_genreList.begin(), m_genreList.end(), ch.programs[jRow].description) != m_genreList.end()))
       {
