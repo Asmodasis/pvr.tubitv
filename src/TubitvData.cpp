@@ -527,8 +527,8 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
     TubiTV::Channel ch;
     if (ParseRow(jRow, ch))
     {
-      
-      ch.m_group.SetGroupName(ch.programs.end().description);
+      kodi::Log(ADDON_LOG_DEBUG, "[ParsePrograms]grpCount is %d", grpCount);
+      ch.m_group.SetGroupName(ch.programs[grpCount].description);
       
       if (!(std::find(m_genreList.begin(), m_genreList.end(), ch.programs[jRow].description) != m_genreList.end()))
       {
