@@ -527,7 +527,7 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
     TubiTV::Channel ch;
     if (ParseRow(jRow, ch))
     {
-      /*
+      
       ch.m_group.SetGroupName(ch.programs[ch.programs.size()-1].description);
       
       if (!(std::find(m_genreList.begin(), m_genreList.end(), ch.programs[jRow].description) != m_genreList.end()))
@@ -539,7 +539,6 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
           kodi::Log(ADDON_LOG_DEBUG, "[ParsePrograms] m_genreCount is %d", m_genreCount);
       }
       grpCount++; 
-      */
     outChannels.push_back(std::move(ch));
     }
     
