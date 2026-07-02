@@ -528,7 +528,7 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
     {
       ch.m_group.SetGroupName(ch.programs[jRow].description);
 
-      if (!(std::find(m_genreList.begin(), m_genreList.end(), out.description) != m_genreList.end()))
+      if (!(std::find(m_genreList.begin(), m_genreList.end(), ch.programs[jRow].description) != m_genreList.end()))
       {
           // Unique genre located
           kodi::Log(ADDON_LOG_DEBUG, "[ParsePrograms] out.description is %d", ch.programs[jRow].description);
