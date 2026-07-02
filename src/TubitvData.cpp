@@ -536,8 +536,9 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
           m_genreCount++;
           kodi::Log(ADDON_LOG_DEBUG, "[ParsePrograms] m_genreCount is %d", m_genreCount);
       }
-    }
     outChannels.push_back(std::move(ch));
+    }
+    
   }
 }
 
