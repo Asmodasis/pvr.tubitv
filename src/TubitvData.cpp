@@ -513,6 +513,7 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
 {
   // Confirmed envelope shape: {"rows": [...]}. The reference scraper reads
   // epg_json.get('rows', []) — NOT a bare top-level array.
+  unsigned short grpCount = 0;
   auto itRows = j.find("rows");
   if (itRows == j.end() || !itRows->is_array())
   {
@@ -526,9 +527,8 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
     TubiTV::Channel ch;
     if (ParseRow(jRow, ch))
     {
+      ch.m_group.SetGroupName(ch.programs[grpCount].description);
       
-      ch.m_group.SetGroupName(ch.programs[jRow].description);
-      /*
       if (!(std::find(m_genreList.begin(), m_genreList.end(), ch.programs[jRow].description) != m_genreList.end()))
       {
           // Unique genre located
@@ -537,7 +537,7 @@ void TubitvData::ParseProgrammingResponse(const nlohmann::json& j, std::vector<T
           m_genreCount++;
           kodi::Log(ADDON_LOG_DEBUG, "[ParsePrograms] m_genreCount is %d", m_genreCount);
       }
-          */
+      grpCount++; 
     outChannels.push_back(std::move(ch));
     }
     
