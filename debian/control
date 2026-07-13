@@ -1,0 +1,22 @@
+Source: kodi-pvr-tubitv
+Priority: extra
+Maintainer: Nobody <nobody@kodi.tv>
+Build-Depends: debhelper (>= 9.0.0), cmake,
+               kodi-addon-dev
+Standards-Version: 3.9.4
+Section: libs
+
+Package: kodi-pvr-tubitv
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Tubi TV PVR for Kodi
+ Tubi TV PVR for Kodi
+
+Package: kodi-pvr-tubitv-dbg
+Section: debug
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: debug symbols for Tubi TV PVR for Kodi
+ debug symbols for Tubi TV PVR for Kodi
+

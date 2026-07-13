@@ -1,0 +1,26 @@
+# Kodi Media Center language file
+# Addon Name: PVR Tubi TV Client
+# Addon id: pvr.tubitv
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+
+msgctxt "#30000"
+msgid "Connection"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Device ID"
+msgstr ""
+
+msgctxt "#30051"
+msgid "Auto-generated UUID identifying this installation to Tubi. Leave blank to auto-generate on first run."
+msgstr ""
+
+msgctxt "#30002"
+msgid "User-Agent"
+msgstr ""
+
+msgctxt "#30052"
+msgid "Browser User-Agent string sent with every request."
+msgstr ""
